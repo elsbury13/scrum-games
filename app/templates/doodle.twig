@@ -1,0 +1,96 @@
+{% include 'header.twig' %}
+{% include 'sidebar.twig' %}
+<div id="wrapper">
+    <section id="doodle" class="wrapper style1 fade-up">
+        <div class="inner">
+            <h1>Draw</h1>
+        </div>
+    </section>
+
+    <form>
+        <section class='canvas style1'>
+            <style>
+                #sig-canvas {
+                    border: 2px dotted #CCCCCC;
+                    border-radius: 5px;
+                    cursor: crosshair;
+                    margin-left:75px;
+                }
+                .btn-default {
+                    margin-left:75px;
+                }
+            </style>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <canvas id="sig-canvas" width="370" height="160">
+                        Get a better browser, bro.
+                    </canvas>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn btn-default" id="sig-clearBtn">Clear Drawing</button>
+                    <textarea id="sig-dataUrl" style='visibility: hidden;' class="form-control" rows="1">Data URL for your signature will go here!</textarea>
+                </div>
+            </div>
+        </section>
+
+        <section id="draw" class="wrapper style1 fade-up">
+            <div class="inner">
+                <label for="question">Question</label>
+                <select required name="question" id="question">
+                    <option value="0" selected="selected">--Select Question--</option>
+                    {% for key, question in questions %}
+                        <option value="{{ key }}">{{ question }}</option>
+                    {% endfor %}
+                </select><br />
+                <label for="team">Team</label>
+                <select required name="team" id="team">
+                    <option value="0" selected="selected">--Select Team--</option>
+                    {% for key, teams in teamNames %}
+                        <option value="{{ key }}">{{ teams }}</option>
+                    {% endfor %}
+                </select><br />
+                <label for="name">Name</label>
+                <input type='text' id='name' name='name'/><br />
+                <input type='submit' id='upload' name='upload' value='Upload' />
+            </div>
+        </section>
+    </form>
+</div>
+
+<div id="errors"></div>
+
+<script>
+    $("#upload").click(function () {
+      // converting the canvas to data URI
+      var strImageData = $('#sig-dataUrl').val()
+      var name = $('#name').val()
+      var team = $('#team option:selected').val()
+
+      var teamName = $('#team option:selected').text()
+      var question = $('#question').val()
+
+      if (name == '') {
+        alert('Please fill in your name')
+      } else if (teamName == 0) {
+        alert('Please chooe a Team')
+      } else if (question == 0) {
+        alert('Please chooe a Question')
+      }
+      else {
+        $.ajax({
+          url: "{{ base_url() }}/upload-drawings",
+          type: "post",
+          data: "save=1&image=" + encodeURIComponent(strImageData) + "&name=" + name + "&team=" + team + "&teamName=" + teamName + "&question=" + question,
+          success: function (msg) {
+            alert('image uploaded')
+            $("#name").html('')
+          }
+        })
+      }
+    })
+</script>
+{% include 'footer.twig' %}
+<script type="text/javascript" src="{{ base_url() }}/js/canvas.js"></script>

@@ -1,0 +1,94 @@
+{% include 'header.twig' %}
+{% include 'sidebar.twig' %}
+<div id="wrapper">
+    <section id="doodle" class="wrapper style1 fullscreen fade-up">
+        <div class="inner">
+            <h1>Doodles</h1>
+            <label for="team">Team</label>
+            <select name="team" id="team-doodles">
+                <option selected="selected">--Select Team--</option>
+                {% for key, team in teamNames %}
+                    <option value="{{ key }}">{{ team }}</option>
+                {% endfor %}
+            </select><br />
+
+            <label for="date">Date</label>
+            <select name="date" id="date">
+                <option selected="selected">--Select Date--</option>
+            </select><br />
+
+            <label for="question">Question</label>
+            <select name="question" id="question">
+                <option selected="selected">--Select Question--</option>
+            </select><br />
+
+            <label for="drawings">Drawings</label>
+            <br /><br /><span id="drawings"></span>
+        </div>
+    </section>
+</div>
+
+<script>
+    $("#team-doodles").change(function (e) {
+      // prevent the page from submitting like normal
+      var id = $(this).val()
+      e.preventDefault()
+
+      $.ajax({
+        url: '{{ base_url() }}/get-dates',
+        type: 'POST',
+        data: {id: id},
+        success: function (html) {
+          $("#date").html('<option selected="selected">--Select Date--</option>')
+          $.each(html.date, function (key, value) {
+            $("#date").append('<option value="' + value + '">' + value + '</option>')
+          })
+          $("#drawings").html('')
+        },
+        error: function () {
+          console.log('it failed!')
+        }
+      })
+    })
+
+    $("#date").change(function () {
+      var date = $(this).val()
+
+      var team = $("#team-doodles option:selected").val()
+      $.ajax({
+        type: "POST",
+        url: '{{ base_url() }}/get-questions',
+        data: {date: date, team: team},
+        cache: false,
+        success: function (html) {
+          $("#question").html('<option selected="selected">--Select Question--</option>')
+          $.each(html.question, function (key, value) {
+            $("#question").append('<option value="' + key + '">' + value + '</option>')
+          })
+          $("#drawings").html('')
+        }
+      })
+    })
+    $("#question").change(function () {
+      var id = $(this).val()
+      var date = $("#date option:selected").val()
+      var team = $("#team-doodles option:selected").text()
+
+      $.ajax({
+        type: "POST",
+        url: '{{ base_url() }}/get-drawings',
+        data: {id: id, team: team, date: date},
+        cache: false,
+        success: function (html) {
+          $("#drawings").html('')
+          $.each(html, function (key, value) {
+            $("#drawings").append('<img src="' + value + '" />')
+          })
+        },
+        error: function () {
+          console.log('it failed!')
+        }
+      })
+    })
+</script>
+{% include 'footer.twig' %}

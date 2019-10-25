@@ -1,0 +1,62 @@
+{% include 'header.twig' %}
+{% include 'sidebar.twig' %}
+<div id="wrapper">
+    <section id="team" class="wrapper style1 fade-up">
+        <div class="inner">
+            <h1>Teams</h1>
+            <ul>
+                {% for key, teams in teamNames %}
+                    <li id="{{ key }}">{{ teams }}</li>
+                {% endfor %}
+            </ul>
+
+            <h1>Add a Team</h1>
+            <button id="create-team">Create new team</button>
+        </div>
+
+        <div class="inner">
+            <div id="team-form" title="Create new user" style="visibility:hidden;">
+              <form>
+                <fieldset>
+                  <label for="name">Name</label>
+                  <input type="text" name="name" id="name" value="" class="text ui-widget-content ui-corner-all">
+                  <input type="submit" tabindex="-1" id="add-team">
+                </fieldset>
+              </form>
+          </div>
+      </div>
+
+
+    </section>
+
+
+
+</div>
+
+<div id="errors"></div>
+
+<script>
+    $( "#create-team" ).click(function() {
+        $( "#team-form" ).css( "visibility", "visible" )
+    })
+
+    $( "#add-team" ).click(function() {
+        var teamName = $("#name").val()
+
+        if (teamName != '') {
+            $.ajax({
+              type: "POST",
+              url: '{{ base_url() }}/team/add',
+              data: {teamName: teamName},
+              cache: false,
+              success: function ($html) {
+                alert('Successfully Added a new Team')
+              },
+              error: function () {
+                alert('Nope')
+              }
+            })
+        }
+    })
+</script>
+{% include 'footer.twig' %}

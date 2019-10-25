@@ -1,0 +1,38 @@
+{% include 'header.twig' %}
+{% include 'sidebar.twig' %}
+<div id="wrapper">
+    <section id="welcome" class="wrapper style1 fullscreen fade-up">
+        <div class="inner">
+            <h1>Welcome</h1>
+            <p>Welcome to scrum games</p>
+        </div>
+    </section>
+    <section id="doodle" class="wrapper style1 fullscreen fade-up">
+        <div class="inner">
+            <h1>Doodle</h1>
+            <p>Here you can draw your sprint</p>
+            <ul class="actions">
+                <li><a href="{{ path_for('doodle') }}" class="button scrolly">Doodle Now</a></li>
+                <li><a href="{{ path_for('doodles') }}" class="button scrolly">Doodles</a></li>
+            </ul>
+        </div>
+    </section>
+    <section id="retros" class="wrapper style1 fullscreen fade-up">
+        <div class="inner">
+            <h1>Retros</h1>
+            <p>Retrospective ideas</p>
+            <ul class="actions">
+                <li><a href="{{ path_for('retros') }}" class="button scrolly">Retros</a></li>
+            </ul>
+        </div>
+    </section>
+    <section id="teams" class="wrapper style1 fullscreen fade-up">
+        <div class="inner">
+            <h1>Teams</h1>
+            <ul class="actions">
+                <li><a href="{{ path_for('team') }}" class="button scrolly">Teams</a></li>
+            </ul>
+        </div>
+    </section>
+</div>
+{% include 'footer.twig' %}
